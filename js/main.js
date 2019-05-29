@@ -1,51 +1,43 @@
 let search = document.getElementById("search");
+let show_more = document.getElementById("show-more");
+let container = document.getElementById("container");
+let page_count = 1;
+let images = '';
+
+show_more.addEventListener('click', function () {
+    getNextImages();
+});
 
 search.addEventListener('click', function () {
-    let photos = [];
-    let nrequest;
-    let nreceived,
-        api_key = "39417c145483a7fb3ee91c5fe5bc93fe",
-        searchText = document.getElementById("searchterm").value;
+    getNextImages()
+        .then(() => {
+            show_more.disabled = false;
+        })
+});
 
+function getNextImages() {
+    let searchText = document.getElementById("searchterm").value.trim();
+    let apiflickr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=dd4a16666bdf3c2180b43bec8dd1534a&tags=" + searchText + "&sort=relevance&safe_search=10&per_page=10&page=" + page_count + "&format=json&nojsoncallback=1";
 
-    let tennisStr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&tags=" + searchText + "&per_page=15&format=json&nojsoncallback=1&api_key=" + api_key;
-    fetch(tennisStr)
+    return fetch(apiflickr)
         .then((r) => {
             return r.json()
-
         })
         .then((r) => {
             console.log('fetch ok', r);
-            fetchPhoto(r);
+            createImg(r);
+            page_count++;
         })
-
         .catch((error) => {
             console.log(JSON.stringify(error));
+            return new Promise.reject();
         });
 
-    function fetchPhoto(data) {
-        nrequest = data.photos.photo.length;
-        nreceived = 10;
-        for (let i = 0; i < nrequest; i++) {
-            let photoObj = {
-                id: data.photos.photo[i].id,
-                title: data.photos.photo[i].title
-            };
-            photos.push(photoObj);
-            display(photos);
-        }
+    function createImg(data) {
+        data.photos.photo.forEach(function (item, n) {
+            let url = 'https://farm' + item.farm + '.staticflickr.com/' + item.server + '/' + item.id + '_' + item.secret + '.jpg';
+            images += '<img src="' + url + '"/>';
+        });
+        container.innerHTML = images;
     }
-
-
-});
-
-
-function display(photos) {
-    var image = "";
-    console.log('photos.items', photos);
-    photos.forEach(function (element) {
-        image += "<img src=\"" + element.photos + "\"/>";
-    });
-    document.getElementById("results").innerHTML = image;
-};
-
+}

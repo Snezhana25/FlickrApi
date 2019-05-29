@@ -3,18 +3,21 @@
 <head>
     <title>Flickr</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=1, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="css/style.css">
 
 </head>
 <body>
-<main>
-    <input id="searchterm" />
-    <button id="search">search</button>
-    <div id="results"></div>
+<main class="main">
+    <div class="searchterm">
+        <input class="searchterm__input" id="searchterm" placeholder="type anything"/>
+    </div>
+    <button class="button button_searchr" id="search">search</button>
+    <div class="main_container" id="container"></div>
+
+    <button class="button button_showmore" id="show-more" disabled>show-more</button>
 </main>
 
-<!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
 <script src="js/main.js"></script>
 </body>
 </html>
